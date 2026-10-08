@@ -147,7 +147,7 @@ function vDashboard(v){
 function upcomingHTML(){
   const ts=[...db.tasks].filter(t=>t.estado!=="completada").sort((a,b)=>(a.fechaLimite||"9999").localeCompare(b.fechaLimite||"9999")).slice(0,6);
   if(!ts.length) return `<div class="empty">Nada pendiente. 🎉</div>`;
-  return `<table class="tbl"><thead><tr><th>Tarea</th><th>Resp.</th><th>Límite</th><th>Estado</th></tr></thead><tbody>`+ts.map(t=>`<tr style="${isLate(t)?"background:#3a1a1a":""}"><td><b>${esc(t.titulo)}</b><br><span class="mut small">${esc(projectById(t.projectId)?.codigoExpediente||"")}</span></td><td>${esc(memberById(t.asignadoA)?.nombre||"—")}</td><td>${fmtDate(t.fechaLimite)} ${isLate(t)?"⚠":""}</td><td>${stateBadge(t.estado)}</td></tr>`).join("")+`</tbody></table>`;
+  return `<table class="tbl"><thead><tr><th>Tarea</th><th>Resp.</th><th>Límite</th><th>Estado</th></tr></thead><tbody>`+ts.map(t=>`<tr style="${isLate(t)?"background:#fde8e8":""}"><td><b>${esc(t.titulo)}</b><br><span class="mut small">${esc(projectById(t.projectId)?.codigoExpediente||"")}</span></td><td>${esc(memberById(t.asignadoA)?.nombre||"—")}</td><td>${fmtDate(t.fechaLimite)} ${isLate(t)?"⚠":""}</td><td>${stateBadge(t.estado)}</td></tr>`).join("")+`</tbody></table>`;
 }
 function describeRef(a){ if(a.scope==="project") return projectById(a.refId)?.nombre||"proyecto"; if(a.scope==="subproject") return subById(a.refId)?.nombre||"subproyecto"; const t=tasksById(a.refId); return t?.titulo||"tarea"; }
 function dashboardClick(e){
@@ -177,7 +177,7 @@ function projectCard(p){
 }
 function subBlock(s){
   const ts=db.tasks.filter(t=>t.subprojectId===s.id); const av=subAdvance(s);
-  return `<div class="card mt" style="background:#141e2d"><div class="spread"><div>🧩 <strong>${esc(s.nombre)}</strong> <span class="badge">Adjudicado a: ${esc(memberById(s.responsableId)?.nombre||"—")}</span><br><span class="mut small">${esc(s.descripcion||"")} · ${fmtEUR(s.presupuesto)} · ${fmtDate(s.fechaInicio)} → ${fmtDate(s.fechaFin)}</span></div><div class="row">${stateBadge(s.estado)}<span class="badge">Prior. ${esc(s.prioridad||"—")}</span><button class="btn sm" data-edit-s="${s.id}">✏</button><button class="btn sm danger" data-del-s="${s.id}">🗑</button></div></div>
+  return `<div class="card mt" style="background:#eef3f8"><div class="spread"><div>🧩 <strong>${esc(s.nombre)}</strong> <span class="badge">Adjudicado a: ${esc(memberById(s.responsableId)?.nombre||"—")}</span><br><span class="mut small">${esc(s.descripcion||"")} · ${fmtEUR(s.presupuesto)} · ${fmtDate(s.fechaInicio)} → ${fmtDate(s.fechaFin)}</span></div><div class="row">${stateBadge(s.estado)}<span class="badge">Prior. ${esc(s.prioridad||"—")}</span><button class="btn sm" data-edit-s="${s.id}">✏</button><button class="btn sm danger" data-del-s="${s.id}">🗑</button></div></div>
   <div class="progress mt"><i style="width:${av}%"></i></div><div class="small">Avance: <b>${av}%</b> · ${ts.length} tareas</div>
   <div class="toolbar"><button class="btn sm primary" data-new-ts="${s.id}">＋ Tarea aquí</button><button class="btn sm ghost" data-reassign-s="${s.id}">🔁 Re-adjudicar</button><button class="btn sm ghost" data-adv-s="${s.id}">📈 Avance</button></div>
   ${ts.map(taskRow).join("")||`<div class="mut small">Sin tareas en este subproyecto.</div>`}</div>`;
@@ -414,7 +414,7 @@ function drawBars(cv, labels, values){
   if(!cv) return; const ctx=cv.getContext("2d"); const W=cv.width=cv.clientWidth*2||800, H=cv.height=440;
   ctx.clearRect(0,0,W,H); const max=Math.max(1,...values);
   const bw=W/Math.max(1,labels.length);
-  values.forEach((v,i)=>{ const h=(H-80)*(v/max); ctx.fillStyle=i%2?"#f5a623":"#3b82f6"; ctx.fillRect(i*bw+20,H-40-h,bw-40,h); ctx.fillStyle="#eaf0f7"; ctx.font="22px sans-serif"; ctx.fillText(String(labels[i]||"").slice(0,10),i*bw+20,H-12); ctx.fillText(Number(v).toFixed(1)+"h",i*bw+20,H-48-h); });
+  values.forEach((v,i)=>{ const h=(H-80)*(v/max); ctx.fillStyle=i%2?"#f5a623":"#3b82f6"; ctx.fillRect(i*bw+20,H-40-h,bw-40,h); ctx.fillStyle="#1c2733"; ctx.font="22px sans-serif"; ctx.fillText(String(labels[i]||"").slice(0,10),i*bw+20,H-12); ctx.fillText(Number(v).toFixed(1)+"h",i*bw+20,H-48-h); });
 }
 
 /* ---------- Global wiring ---------- */
